@@ -58,7 +58,7 @@ export function UsersPage() {
     <div>
       <div className="page-header flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-bold text-slate-800 flex items-center gap-2"><UserCog className="h-5 w-5" /> User Management</h1>
+          <h1 className="text-xl font-bold text-slate-100 flex items-center gap-2"><UserCog className="h-5 w-5" /> User Management</h1>
           <p className="text-sm text-slate-500 mt-0.5">{data?.total ?? 0} users</p>
         </div>
         <button onClick={() => setShowCreate(v => !v)} className="btn-primary"><Plus className="h-4 w-4" /> New User</button>
@@ -70,7 +70,7 @@ export function UsersPage() {
 
         {showCreate && (
           <div className="card p-5">
-            <h3 className="font-semibold text-slate-700 mb-4">Create New User</h3>
+            <h3 className="font-semibold text-slate-200 mb-4">Create New User</h3>
             <form onSubmit={handleCreate} className="grid grid-cols-2 gap-4">
               <div><label className="label">Username *</label><input className="input" required value={form.username} onChange={set('username')} /></div>
               <div><label className="label">Full Name *</label><input className="input" required value={form.full_name} onChange={set('full_name')} /></div>
@@ -95,26 +95,26 @@ export function UsersPage() {
         {loading ? <PageLoader /> : (
           <div className="card overflow-hidden">
             <table className="w-full text-sm">
-              <thead className="border-b border-slate-100 bg-slate-50">
+              <thead className="border-b border-slate-800 bg-slate-900/50">
                 <tr>
-                  <th className="px-4 py-3 text-left font-medium text-slate-600">User</th>
-                  <th className="px-4 py-3 text-left font-medium text-slate-600">Username</th>
-                  <th className="px-4 py-3 text-left font-medium text-slate-600">Role</th>
-                  <th className="px-4 py-3 text-left font-medium text-slate-600">Status</th>
-                  <th className="px-4 py-3 text-left font-medium text-slate-600">Last Login</th>
-                  <th className="px-4 py-3 text-left font-medium text-slate-600">Actions</th>
+                  <th className="px-4 py-3 text-left font-medium text-slate-400">User</th>
+                  <th className="px-4 py-3 text-left font-medium text-slate-400">Username</th>
+                  <th className="px-4 py-3 text-left font-medium text-slate-400">Role</th>
+                  <th className="px-4 py-3 text-left font-medium text-slate-400">Status</th>
+                  <th className="px-4 py-3 text-left font-medium text-slate-400">Last Login</th>
+                  <th className="px-4 py-3 text-left font-medium text-slate-400">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-50">
+              <tbody className="divide-y divide-slate-800/50">
                 {data?.items.map(u => (
-                  <tr key={u.id} className="hover:bg-slate-50">
+                  <tr key={u.id} className="hover:bg-slate-800/30">
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2.5">
-                        <div className="h-7 w-7 rounded-full bg-primary-100 flex items-center justify-center text-xs font-bold text-primary-700">
+                        <div className="h-7 w-7 rounded-full bg-indigo-900/30 flex items-center justify-center text-xs font-bold text-indigo-300">
                           {u.full_name.charAt(0)}
                         </div>
                         <div>
-                          <p className="font-medium text-slate-800">{u.full_name}</p>
+                          <p className="font-medium text-slate-100">{u.full_name}</p>
                           <p className="text-xs text-slate-400">{u.email}</p>
                         </div>
                       </div>
@@ -123,9 +123,9 @@ export function UsersPage() {
                     <td className="px-4 py-3 text-xs text-slate-500">{u.roles.join(', ') || '—'}</td>
                     <td className="px-4 py-3">
                       {u.is_locked
-                        ? <span className="text-xs font-medium text-red-600">🔒 Locked</span>
+                        ? <span className="text-xs font-medium text-red-400">🔒 Locked</span>
                         : u.is_active
-                          ? <span className="text-xs font-medium text-green-600">Active</span>
+                          ? <span className="text-xs font-medium text-emerald-400">Active</span>
                           : <span className="text-xs font-medium text-slate-400">Inactive</span>
                       }
                     </td>
@@ -134,7 +134,7 @@ export function UsersPage() {
                     </td>
                     <td className="px-4 py-3">
                       {u.is_locked && (
-                        <button onClick={() => handleUnlock(u.id, u.username)} className="text-xs text-primary-600 hover:underline flex items-center gap-1">
+                        <button onClick={() => handleUnlock(u.id, u.username)} className="text-xs text-indigo-400 hover:underline flex items-center gap-1">
                           <Unlock className="h-3 w-3" /> Unlock
                         </button>
                       )}

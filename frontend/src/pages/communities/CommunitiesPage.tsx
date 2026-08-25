@@ -23,12 +23,48 @@ interface InfluencerNode {
 }
 
 const COMMUNITY_COLORS = [
-  { bg: 'bg-indigo-900/30', border: 'border-indigo-700/40', text: 'text-indigo-300', dot: 'bg-indigo-500', badge: 'bg-indigo-500/20 text-indigo-300' },
-  { bg: 'bg-emerald-900/30', border: 'border-emerald-700/40', text: 'text-emerald-300', dot: 'bg-emerald-500', badge: 'bg-emerald-500/20 text-emerald-300' },
-  { bg: 'bg-amber-900/30', border: 'border-amber-700/40', text: 'text-amber-300', dot: 'bg-amber-500', badge: 'bg-amber-500/20 text-amber-300' },
-  { bg: 'bg-red-900/30', border: 'border-red-700/40', text: 'text-red-300', dot: 'bg-red-500', badge: 'bg-red-500/20 text-red-300' },
-  { bg: 'bg-violet-900/30', border: 'border-violet-700/40', text: 'text-violet-300', dot: 'bg-violet-500', badge: 'bg-violet-500/20 text-violet-300' },
-  { bg: 'bg-cyan-900/30', border: 'border-cyan-700/40', text: 'text-cyan-300', dot: 'bg-cyan-500', badge: 'bg-cyan-500/20 text-cyan-300' },
+  {
+    bg: 'bg-indigo-100 dark:bg-indigo-900/30',
+    border: 'border-indigo-200 dark:border-indigo-700/40',
+    text: 'text-indigo-800 dark:text-indigo-300',
+    dot: 'bg-indigo-500',
+    badge: 'bg-indigo-100 dark:bg-indigo-500/20 text-indigo-800 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-700/30'
+  },
+  {
+    bg: 'bg-emerald-100 dark:bg-emerald-900/30',
+    border: 'border-emerald-200 dark:border-emerald-700/40',
+    text: 'text-emerald-800 dark:text-emerald-300',
+    dot: 'bg-emerald-500',
+    badge: 'bg-emerald-100 dark:bg-emerald-500/20 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-700/30'
+  },
+  {
+    bg: 'bg-amber-100 dark:bg-amber-900/30',
+    border: 'border-amber-200 dark:border-amber-700/40',
+    text: 'text-amber-800 dark:text-amber-300',
+    dot: 'bg-amber-500',
+    badge: 'bg-amber-100 dark:bg-amber-500/20 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-700/30'
+  },
+  {
+    bg: 'bg-red-100 dark:bg-red-900/30',
+    border: 'border-red-200 dark:border-red-700/40',
+    text: 'text-red-800 dark:text-red-300',
+    dot: 'bg-red-500',
+    badge: 'bg-red-100 dark:bg-red-500/20 text-red-800 dark:text-red-300 border border-red-200 dark:border-red-700/30'
+  },
+  {
+    bg: 'bg-violet-100 dark:bg-violet-900/30',
+    border: 'border-violet-200 dark:border-violet-700/40',
+    text: 'text-violet-800 dark:text-violet-300',
+    dot: 'bg-violet-500',
+    badge: 'bg-violet-100 dark:bg-violet-500/20 text-violet-800 dark:text-violet-300 border border-violet-200 dark:border-violet-700/30'
+  },
+  {
+    bg: 'bg-cyan-100 dark:bg-cyan-900/30',
+    border: 'border-cyan-200 dark:border-cyan-700/40',
+    text: 'text-cyan-800 dark:text-cyan-300',
+    dot: 'bg-cyan-500',
+    badge: 'bg-cyan-100 dark:bg-cyan-500/20 text-cyan-800 dark:text-cyan-300 border border-cyan-200 dark:border-cyan-700/30'
+  },
 ]
 
 export function CommunitiesPage() {
@@ -97,9 +133,9 @@ export function CommunitiesPage() {
       </div>
 
       <div className="page-content space-y-5">
-        <div className="rounded-lg border border-blue-800/30 bg-blue-900/10 px-4 py-3">
-          <p className="text-xs font-semibold text-blue-400">Community Detection Algorithm</p>
-          <p className="text-xs text-blue-500/70 mt-0.5">
+        <div className="rounded-lg border border-blue-200 bg-blue-50 dark:border-blue-800/30 dark:bg-blue-900/10 px-4 py-3">
+          <p className="text-xs font-semibold text-blue-800 dark:text-blue-400">Community Detection Algorithm</p>
+          <p className="text-xs text-blue-700 dark:text-blue-500/70 mt-0.5">
             Using greedy modularity optimization to identify densely connected subgroups.
             Communities represent patterns of association — not confirmed criminal groupings.
           </p>
@@ -163,7 +199,7 @@ export function CommunitiesPage() {
                             <div className={`h-3 w-3 rounded-full ${c.dot} shrink-0`} />
                             <h3 className="font-semibold text-slate-100 text-sm">Community {comm.id}</h3>
                             {commBridges.length > 0 && (
-                              <span className="text-[10px] px-1.5 py-0.5 rounded bg-amber-900/40 text-amber-400 border border-amber-700/30">
+                              <span className="text-[10px] px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 border border-amber-200 dark:bg-amber-900/40 dark:text-amber-400 dark:border-amber-700/30">
                                 Bridge nodes: {commBridges.length}
                               </span>
                             )}
@@ -232,7 +268,7 @@ export function CommunitiesPage() {
                       <div key={node.node_id} className="card p-4 border-amber-800/30">
                         <div className="flex items-start justify-between mb-2">
                           <p className="font-semibold text-slate-100 text-sm">{node.label}</p>
-                          <span className="text-[10px] px-1.5 py-0.5 rounded bg-amber-900/30 text-amber-400 border border-amber-700/30">
+                          <span className="text-[10px] px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 border border-amber-200 dark:bg-amber-900/30 dark:text-amber-400 dark:border-amber-700/30">
                             Bridge
                           </span>
                         </div>

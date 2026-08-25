@@ -84,28 +84,27 @@ export function EvidenceDetailPage() {
 
   if (loading) return <PageLoader />
   if (!evidence) return <div className="p-8 text-slate-500">Evidence not found.</div>
-
   return (
     <div>
-      <div className="page-header flex items-center gap-3">
-        <button onClick={() => navigate('/evidence')} className="btn-secondary p-2"><ArrowLeft className="h-4 w-4" /></button>
+      <div className="page-header border-b border-slate-700 bg-slate-900 px-6 py-4 flex items-center gap-3">
+        <button onClick={() => navigate('/evidence')} className="btn-icon p-2 shrink-0"><ArrowLeft className="h-4 w-4" /></button>
         <div className="flex-1">
           <div className="flex items-center gap-2">
-            <span className="font-mono text-sm font-bold text-primary-600">{evidence.evidence_number}</span>
+            <span className="font-mono text-xs font-bold text-[#4338CA]">{evidence.evidence_number}</span>
             <StatusBadge value={evidence.evidence_type} />
             <StatusBadge value={evidence.status} />
           </div>
-          <h1 className="text-xl font-bold text-slate-800 mt-0.5">{evidence.original_filename}</h1>
+          <h1 className="text-2xl font-bold text-slate-100 mt-1">{evidence.original_filename}</h1>
         </div>
         <div className="flex gap-2">
           {hasPermission('EVIDENCE_DOWNLOAD') && (
-            <button onClick={handleDownload} className="btn-secondary gap-1.5 text-xs">
-              <Download className="h-3.5 w-3.5" /> Download
+            <button onClick={handleDownload} className="btn-secondary gap-1.5 text-xs h-[36px]">
+              <Download className="h-4 w-4 text-[#475467]" /> Download
             </button>
           )}
           {hasPermission('EVIDENCE_READ') && (
-            <button onClick={handleVerify} disabled={verifying} className="btn-secondary gap-1.5 text-xs">
-              <ShieldCheck className="h-3.5 w-3.5" /> {verifying ? 'Verifying…' : 'Verify Integrity'}
+            <button onClick={handleVerify} disabled={verifying} className="btn-secondary gap-1.5 text-xs h-[36px]">
+              <ShieldCheck className="h-4 w-4 text-[#475467]" /> {verifying ? 'Verifying…' : 'Verify Integrity'}
             </button>
           )}
         </div>
@@ -138,30 +137,30 @@ export function EvidenceDetailPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
           {/* Evidence info */}
           <div className="card p-5">
-            <h3 className="font-semibold text-slate-700 mb-4">Evidence Details</h3>
-            <dl className="space-y-2.5 text-sm">
+            <h3 className="font-bold text-slate-100 mb-4 text-sm uppercase tracking-wider">Evidence Details</h3>
+            <dl className="space-y-3 text-sm">
               {[
                 ['MIME Type', evidence.mime_type],
                 ['File Size', formatBytes(evidence.file_size)],
                 ['Uploaded By', evidence.uploaded_by_name],
                 ['Uploaded', format(new Date(evidence.uploaded_at), 'PPp')],
                 ['Custodian', evidence.current_custodian_name ?? '—'],
-                ['Case', <Link to={`/cases/${evidence.case_id}`} className="text-primary-600 hover:underline">{evidence.case_id.slice(0, 8)}…</Link>],
+                ['Case', <Link to={`/cases/${evidence.case_id}`} className="text-[#4338CA] hover:underline font-bold">{evidence.case_id.slice(0, 8)}…</Link>],
               ].map(([label, value]) => (
                 <div key={String(label)} className="flex gap-3">
-                  <dt className="w-28 shrink-0 text-slate-400">{label}</dt>
-                  <dd className="text-slate-700">{value}</dd>
+                  <dt className="w-28 shrink-0 text-slate-400 font-bold">{label}</dt>
+                  <dd className="text-slate-200 font-semibold">{value}</dd>
                 </div>
               ))}
             </dl>
-            <div className="mt-4 pt-4 border-t border-slate-100">
-              <p className="text-xs text-slate-400 mb-1">SHA-256 Hash</p>
-              <p className="hash-mono text-slate-600 bg-slate-50 rounded p-2">{evidence.sha256_hash}</p>
+            <div className="mt-4 pt-4 border-t border-slate-700">
+              <p className="text-xs text-slate-400 font-bold uppercase tracking-wider mb-2">SHA-256 Hash</p>
+              <p className="hash-mono text-slate-200 bg-[#F8FAFC] border border-[#D9E0EA] rounded p-2.5 font-semibold">{evidence.sha256_hash}</p>
             </div>
             {evidence.description && (
               <div className="mt-3">
-                <p className="text-xs text-slate-400 mb-1">Description</p>
-                <p className="text-sm text-slate-600">{evidence.description}</p>
+                <p className="text-xs text-slate-400 font-bold uppercase tracking-wider mb-2">Description</p>
+                <p className="text-sm text-slate-200 bg-[#F8FAFC] border border-[#D9E0EA] p-3 rounded-lg font-medium">{evidence.description}</p>
               </div>
             )}
           </div>
@@ -169,22 +168,22 @@ export function EvidenceDetailPage() {
           {/* Transfer */}
           {hasPermission('EVIDENCE_TRANSFER') && (
             <div className="card p-5">
-              <h3 className="font-semibold text-slate-700 mb-4 flex items-center gap-2">
-                <ArrowRightLeft className="h-4 w-4" /> Transfer Custody
+              <h3 className="font-bold text-slate-100 mb-4 text-sm uppercase tracking-wider flex items-center gap-2">
+                <ArrowRightLeft className="h-4 w-4 text-indigo-600" /> Transfer Custody
               </h3>
-              <div className="space-y-3">
+              <div className="space-y-4">
                 <div>
                   <label className="label">Transfer To</label>
-                  <select className="input" value={transferTo} onChange={e => setTransferTo(e.target.value)}>
+                  <select className="input h-[44px]" value={transferTo} onChange={e => setTransferTo(e.target.value)}>
                     <option value="">Select officer…</option>
                     {users.map(u => <option key={u.id} value={u.id}>{u.full_name} ({u.username})</option>)}
                   </select>
                 </div>
                 <div>
                   <label className="label">Remarks</label>
-                  <input className="input" placeholder="Reason for transfer" value={transferNote} onChange={e => setTransferNote(e.target.value)} />
+                  <input className="input h-[44px]" placeholder="Reason for transfer" value={transferNote} onChange={e => setTransferNote(e.target.value)} />
                 </div>
-                <button onClick={handleTransfer} disabled={!transferTo || transferring} className="btn-primary w-full">
+                <button onClick={handleTransfer} disabled={!transferTo || transferring} className="btn-primary h-[44px] w-full flex items-center justify-center gap-1.5">
                   <ArrowRightLeft className="h-4 w-4" /> {transferring ? 'Transferring…' : 'Transfer Custody'}
                 </button>
               </div>
@@ -194,31 +193,31 @@ export function EvidenceDetailPage() {
 
         {/* Chain of custody */}
         <div className="card p-5">
-          <h3 className="font-semibold text-slate-700 mb-4">Chain of Custody</h3>
+          <h3 className="font-bold text-slate-100 mb-4 text-sm uppercase tracking-wider">Chain of Custody</h3>
           {custody.length === 0
-            ? <p className="text-sm text-slate-400">No custody records.</p>
+            ? <p className="text-sm text-slate-400 font-semibold">No custody records.</p>
             : (
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
-                  <thead className="border-b border-slate-100">
+                  <thead className="table-header">
                     <tr>
-                      <th className="pb-2 text-left font-medium text-slate-600">Action</th>
-                      <th className="pb-2 text-left font-medium text-slate-600">From</th>
-                      <th className="pb-2 text-left font-medium text-slate-600">To</th>
-                      <th className="pb-2 text-left font-medium text-slate-600">By</th>
-                      <th className="pb-2 text-left font-medium text-slate-600">Hash Snapshot</th>
-                      <th className="pb-2 text-left font-medium text-slate-600">Time</th>
+                      <th className="px-4 py-3 text-left font-bold text-slate-300 text-xs uppercase tracking-wider">Action</th>
+                      <th className="px-4 py-3 text-left font-bold text-slate-300 text-xs uppercase tracking-wider">From</th>
+                      <th className="px-4 py-3 text-left font-bold text-slate-300 text-xs uppercase tracking-wider">To</th>
+                      <th className="px-4 py-3 text-left font-bold text-slate-300 text-xs uppercase tracking-wider">By</th>
+                      <th className="px-4 py-3 text-left font-bold text-slate-300 text-xs uppercase tracking-wider">Hash Snapshot</th>
+                      <th className="px-4 py-3 text-left font-bold text-slate-300 text-xs uppercase tracking-wider">Time</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-50">
+                  <tbody className="divide-y divide-[#EAECF0]">
                     {custody.map(c => (
-                      <tr key={c.id}>
-                        <td className="py-2 pr-4"><span className="rounded bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-700">{c.action}</span></td>
-                        <td className="py-2 pr-4 text-slate-500 text-xs">{c.previous_custodian_name ?? '—'}</td>
-                        <td className="py-2 pr-4 text-slate-700 text-xs">{c.new_custodian_name ?? '—'}</td>
-                        <td className="py-2 pr-4 text-slate-600 text-xs">{c.transferred_by_name}</td>
-                        <td className="py-2 pr-4 font-mono text-xs text-slate-400">{c.sha256_at_transfer?.slice(0, 12) ?? '—'}…</td>
-                        <td className="py-2 text-slate-400 text-xs">{format(new Date(c.transferred_at), 'PP p')}</td>
+                      <tr key={c.id} className="table-row">
+                        <td className="table-cell"><span className="rounded bg-indigo-50 border border-indigo-100 px-2 py-0.5 text-xs font-semibold text-indigo-700">{c.action}</span></td>
+                        <td className="table-cell text-slate-300 text-xs font-medium">{c.previous_custodian_name ?? '—'}</td>
+                        <td className="table-cell text-slate-100 text-xs font-bold">{c.new_custodian_name ?? '—'}</td>
+                        <td className="table-cell text-slate-200 text-xs font-semibold">{c.transferred_by_name}</td>
+                        <td className="table-cell font-mono text-xs text-slate-400">{c.sha256_at_transfer?.slice(0, 12) ?? '—'}…</td>
+                        <td className="table-cell text-slate-400 text-xs font-medium">{format(new Date(c.transferred_at), 'PP p')}</td>
                       </tr>
                     ))}
                   </tbody>

@@ -97,7 +97,9 @@ async def login(
 
     # Check if account is locked
     if user.is_locked:
-        if user.locked_until and user.locked_until > datetime.now(timezone.utc):
+        locked_until = user.locked_until.replace(tzinfo=None) if (user.locked_until and user.locked_until.tzinfo) else user.locked_until
+        now = datetime.now(timezone.utc).replace(tzinfo=None)
+        if locked_until and locked_until > now:
             await log_security_event(
                 db, "LOGIN_ATTEMPT_LOCKED_ACCOUNT",
                 f"Login attempt on locked account: {user.username}",

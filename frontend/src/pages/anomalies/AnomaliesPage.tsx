@@ -22,17 +22,17 @@ const ANOMALY_TYPE_INFO: Record<string, { icon: React.ReactNode; label: string; 
   BRIDGE_NODE: {
     icon: <GitBranch className="h-4 w-4" />,
     label: 'Network Bridge',
-    color: 'text-amber-400',
+    color: 'text-amber-700',
   },
   HIGH_DEGREE_NODE: {
     icon: <Network className="h-4 w-4" />,
     label: 'High Connectivity Node',
-    color: 'text-orange-400',
+    color: 'text-orange-700',
   },
   COMMUNITY_BRIDGE: {
     icon: <TrendingUp className="h-4 w-4" />,
     label: 'Community Bridge',
-    color: 'text-red-400',
+    color: 'text-red-750',
   },
 }
 
@@ -40,30 +40,30 @@ function AnomalyCard({ anomaly, onCreateLead }: { anomaly: Anomaly; onCreateLead
   const typeInfo = ANOMALY_TYPE_INFO[anomaly.type] || {
     icon: <AlertTriangle className="h-4 w-4" />,
     label: anomaly.type,
-    color: 'text-slate-400',
+    color: 'text-slate-500',
   }
   const confPct = Math.round(anomaly.confidence * 100)
   const barColor = anomaly.severity === 'HIGH' || anomaly.severity === 'CRITICAL'
-    ? 'bg-red-500' : anomaly.severity === 'MEDIUM' ? 'bg-amber-500' : 'bg-blue-500'
+    ? 'bg-red-600' : anomaly.severity === 'MEDIUM' ? 'bg-amber-600' : 'bg-blue-600'
 
   return (
-    <div className="card p-5 space-y-4">
+    <div className="card p-5 space-y-4 bg-white border border-[#D9E0EA]">
       <div className="flex items-start justify-between">
         <div className="flex items-start gap-3">
           <div className={`mt-0.5 ${typeInfo.color}`}>{typeInfo.icon}</div>
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide">
+              <span className="text-xs font-bold text-[#475467] uppercase tracking-wide">
                 {typeInfo.label}
               </span>
               <StatusBadge value={anomaly.severity} type="severity" />
             </div>
-            <h3 className="font-semibold text-slate-100">{anomaly.label}</h3>
+            <h3 className="font-bold text-slate-100">{anomaly.label}</h3>
           </div>
         </div>
         <div className="text-right shrink-0">
-          <p className="text-xl font-bold text-slate-200">{confPct}%</p>
-          <p className="text-[10px] text-slate-600">confidence</p>
+          <p className="text-xl font-bold text-slate-100">{confPct}%</p>
+          <p className="text-[10px] text-slate-400 font-semibold uppercase">confidence</p>
         </div>
       </div>
 
@@ -75,44 +75,44 @@ function AnomalyCard({ anomaly, onCreateLead }: { anomaly: Anomaly; onCreateLead
       </div>
 
       {/* Description */}
-      <p className="text-sm text-slate-400 leading-relaxed">{anomaly.description}</p>
+      <p className="text-sm text-slate-200 leading-relaxed">{anomaly.description}</p>
 
       {/* Supporting facts */}
-      <div className="rounded-lg bg-slate-800/50 border border-slate-800 p-3">
-        <p className="text-xs font-semibold text-slate-500 mb-1.5">Why this was flagged:</p>
-        <ul className="space-y-1 text-xs text-slate-400">
+      <div className="rounded-lg bg-[#F8FAFC] border border-[#D9E0EA] p-3">
+        <p className="text-xs font-bold text-[#475467] mb-1.5">Why this was flagged:</p>
+        <ul className="space-y-1 text-xs text-slate-200 font-medium">
           {anomaly.type === 'BRIDGE_NODE' && (
             <>
-              <li className="flex items-start gap-1.5"><span className="text-indigo-400 mt-0.5">•</span> Acts as articulation point — network would fragment without this node</li>
-              <li className="flex items-start gap-1.5"><span className="text-indigo-400 mt-0.5">•</span> Critical path for information/resource flow</li>
+              <li className="flex items-start gap-1.5"><span className="text-indigo-650 mt-0.5">•</span> Acts as articulation point — network would fragment without this node</li>
+              <li className="flex items-start gap-1.5"><span className="text-indigo-650 mt-0.5">•</span> Critical path for information/resource flow</li>
             </>
           )}
           {anomaly.type === 'HIGH_DEGREE_NODE' && (
             <>
-              <li className="flex items-start gap-1.5"><span className="text-orange-400 mt-0.5">•</span> Connection count significantly above network average</li>
-              <li className="flex items-start gap-1.5"><span className="text-orange-400 mt-0.5">•</span> Statistical outlier — 2+ standard deviations above mean degree</li>
+              <li className="flex items-start gap-1.5"><span className="text-orange-700 mt-0.5">•</span> Connection count significantly above network average</li>
+              <li className="flex items-start gap-1.5"><span className="text-orange-700 mt-0.5">•</span> Statistical outlier — 2+ standard deviations above mean degree</li>
             </>
           )}
           {anomaly.type === 'COMMUNITY_BRIDGE' && (
             <>
-              <li className="flex items-start gap-1.5"><span className="text-red-400 mt-0.5">•</span> Connects multiple otherwise separate network communities</li>
-              <li className="flex items-start gap-1.5"><span className="text-red-400 mt-0.5">•</span> May facilitate coordination between distinct groups</li>
+              <li className="flex items-start gap-1.5"><span className="text-red-750 mt-0.5">•</span> Connects multiple otherwise separate network communities</li>
+              <li className="flex items-start gap-1.5"><span className="text-red-750 mt-0.5">•</span> May facilitate coordination between distinct groups</li>
             </>
           )}
         </ul>
       </div>
 
       {/* Ethics notice */}
-      <p className="text-[10px] text-slate-600 italic border-t border-slate-800 pt-3">
+      <p className="text-[10px] text-slate-400 italic border-t border-[#D9E0EA] pt-3">
         This is an investigative signal derived from graph topology. It does not constitute evidence of
         criminal activity. Requires human investigator review and corroboration.
       </p>
 
       <button
         onClick={() => onCreateLead(anomaly)}
-        className="btn-secondary text-xs py-1.5 w-full"
+        className="btn-secondary text-xs py-2 w-full flex items-center justify-center gap-1.5"
       >
-        <ShieldAlert className="h-3.5 w-3.5" />
+        <ShieldAlert className="h-4 w-4 text-[#475467]" />
         Create Investigative Lead
       </button>
     </div>
@@ -160,27 +160,27 @@ export function AnomaliesPage() {
 
   return (
     <div className="animate-fade-in">
-      <div className="page-header flex items-center justify-between">
+      <div className="page-header border-b border-slate-700 bg-slate-900 px-6 py-4 flex items-center justify-between">
         <div>
-          <h1 className="text-lg font-bold text-slate-100 flex items-center gap-2">
-            <AlertTriangle className="h-5 w-5 text-amber-400" /> Anomaly Detection
+          <h1 className="text-xl font-bold text-slate-100 flex items-center gap-2">
+            <AlertTriangle className="h-5 w-5 text-amber-500" /> Anomaly Detection
           </h1>
-          <p className="text-xs text-slate-500 mt-0.5">Network patterns flagged for investigative attention</p>
+          <p className="text-xs text-slate-400 mt-0.5">Network patterns flagged for investigative attention</p>
         </div>
         <div className="flex gap-2">
-          <button onClick={() => leadsApi.generateFromNetwork(selectedCase || undefined).then(() => setSuccess('Leads generated')).catch(e => setError(getErrorMessage(e)))} className="btn-secondary text-xs py-1.5">
-            <ShieldAlert className="h-3.5 w-3.5" /> Generate All Leads
+          <button onClick={() => leadsApi.generateFromNetwork(selectedCase || undefined).then(() => setSuccess('Leads generated')).catch(e => setError(getErrorMessage(e)))} className="btn-secondary text-xs h-[36px] flex items-center gap-1">
+            <ShieldAlert className="h-4 w-4 text-[#475467]" /> Generate All Leads
           </button>
-          <button onClick={() => loadAnomalies(selectedCase || undefined)} disabled={analyzing} className="btn-secondary text-xs py-1.5">
-            <RefreshCw className={`h-3.5 w-3.5 ${analyzing ? 'animate-spin' : ''}`} />
+          <button onClick={() => loadAnomalies(selectedCase || undefined)} disabled={analyzing} className="btn-secondary text-xs h-[36px] flex items-center justify-center">
+            <RefreshCw className={`h-4 w-4 text-[#475467] ${analyzing ? 'animate-spin' : ''}`} />
           </button>
         </div>
       </div>
 
       <div className="page-content space-y-5">
-        <div className="rounded-lg border border-amber-800/30 bg-amber-900/10 px-4 py-3">
-          <p className="text-xs font-semibold text-amber-400">⚠ ANALYTICAL FLAGS — NOT CONFIRMED CRIMINAL ACTIVITY</p>
-          <p className="text-xs text-amber-500/70 mt-0.5">
+        <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3">
+          <p className="text-xs font-bold text-amber-800">⚠ ANALYTICAL FLAGS — NOT CONFIRMED CRIMINAL ACTIVITY</p>
+          <p className="text-xs text-amber-700 mt-0.5">
             Anomalies are statistical patterns in network data that warrant investigative attention.
             They require human review, corroboration, and investigation before any action.
           </p>
@@ -191,16 +191,16 @@ export function AnomaliesPage() {
 
         <div className="flex flex-wrap gap-3">
           <div className="card p-3 flex items-center gap-3">
-            <label className="text-xs text-slate-400 shrink-0">Case:</label>
-            <select className="input text-xs py-1 max-w-xs" value={selectedCase}
+            <label className="text-xs text-slate-400 shrink-0 font-bold uppercase tracking-wider">Case:</label>
+            <select className="input text-xs h-9 max-w-xs" value={selectedCase}
               onChange={e => setSelectedCase(e.target.value)}>
               <option value="">All Cases</option>
               {cases.map(c => <option key={c.id} value={c.id}>{c.case_number}</option>)}
             </select>
           </div>
           <div className="card p-3 flex items-center gap-2">
-            <label className="text-xs text-slate-400">Severity:</label>
-            <select className="input text-xs py-1 w-28" value={severityFilter}
+            <label className="text-xs text-slate-400 font-bold uppercase tracking-wider">Severity:</label>
+            <select className="input text-xs h-9 w-28" value={severityFilter}
               onChange={e => setSeverityFilter(e.target.value)}>
               <option value="">All</option>
               <option value="CRITICAL">Critical</option>
@@ -218,15 +218,15 @@ export function AnomaliesPage() {
               const count = anomalies.filter(a => a.severity === sev).length
               if (!count) return null
               const colors: Record<string, string> = {
-                CRITICAL: 'text-red-400 bg-red-900/20 border-red-800/30',
-                HIGH: 'text-orange-400 bg-orange-900/20 border-orange-800/30',
-                MEDIUM: 'text-amber-400 bg-amber-900/20 border-amber-800/30',
-                LOW: 'text-blue-400 bg-blue-900/20 border-blue-800/30',
+                CRITICAL: 'text-red-800 bg-red-100 border-red-300',
+                HIGH: 'text-orange-800 bg-orange-100 border-orange-300',
+                MEDIUM: 'text-amber-800 bg-amber-100 border-amber-300',
+                LOW: 'text-blue-800 bg-blue-100 border-blue-300',
               }
               return (
                 <div key={sev} className={`px-3 py-2 rounded-lg border text-center min-w-[70px] ${colors[sev]}`}>
                   <p className="text-lg font-bold">{count}</p>
-                  <p className="text-[10px]">{sev}</p>
+                  <p className="text-[10px] font-bold uppercase tracking-wider">{sev}</p>
                 </div>
               )
             })}
@@ -236,9 +236,9 @@ export function AnomaliesPage() {
         {analyzing && <PageLoader />}
 
         {!analyzing && filtered.length === 0 && (
-          <div className="card p-12 text-center text-slate-600">
-            <AlertTriangle className="h-12 w-12 mx-auto mb-3 opacity-20" />
-            <p>{anomalies.length === 0 ? 'No anomalies detected in this network.' : 'No anomalies match the current filter.'}</p>
+          <div className="card p-12 text-center text-slate-400">
+            <AlertTriangle className="h-12 w-12 mx-auto mb-3 opacity-20 text-[#667085]" />
+            <p className="font-bold text-[#172033]">{anomalies.length === 0 ? 'No anomalies detected in this network.' : 'No anomalies match the current filter.'}</p>
             <p className="text-xs mt-1">This may indicate a sparse network or insufficient data.</p>
           </div>
         )}

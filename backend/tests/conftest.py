@@ -47,9 +47,9 @@ def event_loop():
     loop.close()
 
 
-@pytest_asyncio.fixture(scope="session")
+@pytest_asyncio.fixture
 async def db_setup():
-    """Create all tables once per session."""
+    """Create all tables once per test."""
     async with test_engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
     yield

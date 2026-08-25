@@ -117,6 +117,11 @@ async def compute_network_stats(
 
     # ── Influencers ──────────────────────────────────────────────────────────
     # Composite influence score = 0.4*degree + 0.4*betweenness + 0.2*pagerank
+    node_to_community = {}
+    for c in communities:
+        for m in c["members"]:
+            node_to_community[m] = c["id"]
+
     influencers = []
     for node in G.nodes():
         score = (
@@ -124,11 +129,12 @@ async def compute_network_stats(
             0.4 * between_c.get(node, 0) +
             0.2 * pagerank.get(node, 0)
         )
-        # Find which communities this node belongs to
-        member_communities = [
-            c["id"] for c in communities if node in c["members"]
-        ]
-        bridges_communities = len(member_communities) > 1
+        # Find all communities that this node connects (itself + neighbors)
+        neighbor_comms = {node_to_community[node]} if node in node_to_community else set()
+        for nbr in U.neighbors(node):
+            if nbr in node_to_community:
+                neighbor_comms.add(node_to_community[nbr])
+        bridges_communities = len(neighbor_comms) > 1
         influencers.append({
             "node_id": node,
             "label": G.nodes[node].get("label", node[:8]),
@@ -141,9 +147,10 @@ async def compute_network_stats(
             "in_degree": G.in_degree(node),
             "out_degree": G.out_degree(node),
             "is_bridge_node": bridges_communities,
-            "communities": member_communities,
+            "communities": list(neighbor_comms),
         })
     influencers.sort(key=lambda x: x["influence_score"], reverse=True)
+
 
     # ── Anomaly detection ─────────────────────────────────────────────────────
     anomalies = []

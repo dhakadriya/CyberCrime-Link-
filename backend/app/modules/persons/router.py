@@ -296,3 +296,122 @@ async def add_person_to_case_v2(
     current_user: User = Depends(require_permission("PERSON_CREATE")),
 ) -> CasePersonResponse:
     return await add_person_to_case(request, case_id, link_data, db, current_user)
+
+
+from pydantic import BaseModel
+
+class PersonMergeRequest(BaseModel):
+    source_person_id: str
+    target_person_id: str
+
+@router.post(
+    "/merge",
+    summary="Merge source person into target person",
+)
+async def merge_persons(
+    request: Request,
+    payload: PersonMergeRequest,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(require_permission("PERSON_UPDATE")),
+):
+    """
+    Merge a duplicate source person into a target person.
+    Re-links CasePerson, Relationship, and InvestigationEvent references,
+    then deletes the source person.
+    """
+    if payload.source_person_id == payload.target_person_id:
+        raise HTTPException(status_code=400, detail="Cannot merge a person into themselves.")
+
+    # Get source and target persons
+    source_person = (await db.execute(
+        select(Person).where(Person.id == payload.source_person_id)
+    )).scalar_one_or_none()
+    target_person = (await db.execute(
+        select(Person).where(Person.id == payload.target_person_id)
+    )).scalar_one_or_none()
+
+    if not source_person or not target_person:
+        raise HTTPException(status_code=404, detail="Source or target person not found.")
+
+    from app.models.relationship import Relationship
+    from app.models.investigation import InvestigationEvent
+    from app.models.scoring import SuspectScore
+    from app.models.lead import InvestigativeLead
+
+    # 1. Update CasePerson assignments
+    source_cases = (await db.execute(
+        select(CasePerson).where(CasePerson.person_id == payload.source_person_id)
+    )).scalars().all()
+    
+    for cp in source_cases:
+        # Check if target is already in this case with the same role
+        existing = (await db.execute(
+            select(CasePerson).where(
+                CasePerson.case_id == cp.case_id,
+                CasePerson.person_id == payload.target_person_id,
+                CasePerson.role == cp.role
+            )
+        )).scalar_one_or_none()
+        
+        if existing:
+            # target already has this assignment, deactivate source assignment
+            cp.is_active = False
+        else:
+            # update source assignment to point to target
+            cp.person_id = payload.target_person_id
+
+    # 2. Update Relationships
+    src_rels = (await db.execute(
+        select(Relationship).where(Relationship.source_id == payload.source_person_id, Relationship.source_type == "PERSON")
+    )).scalars().all()
+    for rel in src_rels:
+        rel.source_id = payload.target_person_id
+
+    tgt_rels = (await db.execute(
+        select(Relationship).where(Relationship.target_id == payload.source_person_id, Relationship.target_type == "PERSON")
+    )).scalars().all()
+    for rel in tgt_rels:
+        rel.target_id = payload.target_person_id
+
+    # 3. Update Timeline Events
+    events = (await db.execute(
+        select(InvestigationEvent).where(InvestigationEvent.related_person == payload.source_person_id)
+    )).scalars().all()
+    for ev in events:
+        ev.related_person = payload.target_person_id
+
+    # 4. Update SuspectScores
+    scores = (await db.execute(
+        select(SuspectScore).where(SuspectScore.person_id == payload.source_person_id)
+    )).scalars().all()
+    for sc in scores:
+        sc.person_id = payload.target_person_id
+
+    # 5. Update InvestigativeLeads
+    leads = (await db.execute(
+        select(InvestigativeLead).where(InvestigativeLead.subject_id == payload.source_person_id, InvestigativeLead.subject_type == "PERSON")
+    )).scalars().all()
+    for lead in leads:
+        lead.subject_id = payload.target_person_id
+        lead.subject_name = target_person.full_name
+
+    # 6. Delete source person
+    await db.delete(source_person)
+
+    # 7. Log audit action
+    await log_action(
+        db, "PERSON_MERGED",
+        user_id=current_user.id, username=current_user.username,
+        resource_type="PERSON", resource_id=payload.target_person_id,
+        details={
+            "merged_from_id": payload.source_person_id,
+            "merged_from_name": source_person.full_name,
+            "merged_to_name": target_person.full_name,
+        },
+        request=request,
+    )
+
+    await db.commit()
+
+    return {"message": f"Successfully merged {source_person.full_name} into {target_person.full_name}."}
+

@@ -1,9 +1,11 @@
+import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import {
   LayoutDashboard, FolderOpen, Users, FileText, Activity,
   GitBranch, Brain, BarChart3, ShieldAlert, UserCog, LogOut,
   Shield, Upload, Network, AlertTriangle, Map, Search,
   Lightbulb, Globe, Settings, Boxes, Clock,
+  ChevronLeft, ChevronRight,
 } from 'lucide-react';
 import clsx from 'clsx';
 import { useAuth } from '../../context/AuthContext';
@@ -54,6 +56,7 @@ const SECTION_LABELS: Record<string, string> = {
 
 export function Sidebar() {
   const { user, logout, hasPermission } = useAuth();
+  const [collapsed, setCollapsed] = useState(false);
 
   const visibleItems = NAV_ITEMS.filter(
     (item) => !item.permission || hasPermission(item.permission)
@@ -63,23 +66,44 @@ export function Sidebar() {
   const sections = ['main', 'investigation', 'intelligence', 'admin'];
 
   return (
-    <aside className="flex h-screen w-56 flex-col bg-slate-900 border-r border-slate-800 text-slate-300 shrink-0">
-      {/* Logo */}
-      <div className="flex items-center gap-2.5 border-b border-slate-800 px-4 py-3.5">
-        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-600 shadow-lg shadow-indigo-900/50">
-          <Shield className="h-4 w-4 text-white" />
+    <aside className={clsx(
+      "flex h-screen flex-col bg-slate-900 border-r border-slate-700 text-slate-300 shrink-0 transition-all duration-300",
+      collapsed ? "w-16" : "w-56"
+    )}>
+      {/* Logo Area */}
+      <div className="flex items-center justify-between border-b border-slate-700 px-4 py-3.5 h-[53px]">
+        <div className="flex items-center gap-2.5 overflow-hidden">
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-indigo-600">
+            <Shield className="h-4 w-4 text-white" />
+          </div>
+          {!collapsed && (
+            <div className="animate-fade-in">
+              <div className="font-bold text-slate-100 leading-tight text-sm tracking-wide">CrimeLink</div>
+              <div className="text-[10px] text-slate-400 uppercase tracking-wider">Intelligence</div>
+            </div>
+          )}
         </div>
-        <div>
-          <div className="font-bold text-white leading-tight text-sm tracking-wide">CrimeLink</div>
-          <div className="text-[10px] text-slate-500 uppercase tracking-wider">Intelligence</div>
-        </div>
+        <button
+          onClick={() => setCollapsed(!collapsed)}
+          className="rounded p-1 text-slate-400 hover:bg-slate-800 hover:text-slate-200 transition-colors"
+          title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+          aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+        >
+          {collapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
+        </button>
       </div>
 
       {/* Demo warning */}
-      <div className="mx-3 mt-2 rounded-md border border-amber-700/30 bg-amber-900/10 px-2.5 py-1.5">
-        <p className="text-[10px] font-semibold text-amber-500 uppercase tracking-wide">Demo Environment</p>
-        <p className="text-[10px] text-amber-600/70">Synthetic data only</p>
-      </div>
+      {!collapsed ? (
+        <div className="mx-3 mt-2 rounded-md border border-amber-700/30 bg-amber-50 px-2.5 py-1.5 animate-fade-in">
+          <p className="text-[10px] font-bold text-amber-800 uppercase tracking-wide">Demo Environment</p>
+          <p className="text-[10px] text-amber-700">Synthetic data only</p>
+        </div>
+      ) : (
+        <div className="mx-auto mt-2 flex h-5 w-5 items-center justify-center rounded-full bg-amber-500/10 border border-amber-500/20" title="Demo Environment (Synthetic Data Only)">
+          <AlertTriangle className="h-3 w-3 text-amber-600" />
+        </div>
+      )}
 
       {/* Navigation */}
       <nav className="flex-1 overflow-y-auto px-2 py-2 space-y-0.5">
@@ -88,27 +112,28 @@ export function Sidebar() {
           if (sectionItems.length === 0) return null;
           const label = SECTION_LABELS[section];
           return (
-            <div key={section}>
-              {label && (
-                <p className="px-3 pt-3 pb-1 text-[9px] font-semibold uppercase tracking-widest text-slate-600">
+            <div key={section} className="mb-2">
+              {label && !collapsed && (
+                <p className="px-3 pt-3 pb-1 text-[9px] font-bold uppercase tracking-widest text-slate-400 animate-fade-in">
                   {label}
                 </p>
               )}
+              {collapsed && label && <div className="h-px bg-slate-700 my-2" />}
               {sectionItems.map((item) => (
                 <NavLink
                   key={item.to}
                   to={item.to}
+                  title={collapsed ? item.label : undefined}
                   className={({ isActive }) =>
                     clsx(
-                      'flex items-center gap-2 rounded-lg px-3 py-2 text-xs font-medium transition-all duration-150 border',
-                      isActive
-                        ? 'bg-indigo-600/15 text-indigo-400 border-indigo-500/25 shadow-sm'
-                        : 'text-slate-400 hover:bg-slate-800 hover:text-slate-200 border-transparent'
+                      'flex items-center gap-2 px-3 py-2 text-xs font-semibold transition-all duration-150',
+                      collapsed ? 'justify-center px-2' : '',
+                      isActive ? 'nav-active' : 'nav-inactive'
                     )
                   }
                 >
-                  {item.icon}
-                  {item.label}
+                  <span className="shrink-0">{item.icon}</span>
+                  {!collapsed && <span className="animate-fade-in truncate">{item.label}</span>}
                 </NavLink>
               ))}
             </div>
@@ -117,19 +142,24 @@ export function Sidebar() {
       </nav>
 
       {/* User info + logout */}
-      <div className="border-t border-slate-800 px-3 py-3">
-        <div className="flex items-center gap-2">
-          <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-indigo-600/20 border border-indigo-500/30 text-xs font-bold text-indigo-400">
+      <div className="border-t border-slate-700 px-3 py-3">
+        <div className={clsx(
+          "flex items-center gap-2",
+          collapsed ? "justify-center" : ""
+        )}>
+          <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-indigo-50 border border-indigo-100 text-xs font-bold text-indigo-600" title={user?.full_name}>
             {user?.full_name?.charAt(0) ?? '?'}
           </div>
-          <div className="flex-1 min-w-0">
-            <p className="truncate text-xs font-medium text-slate-200">{user?.full_name}</p>
-            <p className="truncate text-[10px] text-slate-500">{user?.roles?.[0]?.replace(/_/g, ' ')}</p>
-          </div>
+          {!collapsed && (
+            <div className="flex-1 min-w-0 animate-fade-in">
+              <p className="truncate text-xs font-bold text-slate-100">{user?.full_name}</p>
+              <p className="truncate text-[10px] text-slate-400">{user?.roles?.[0]?.replace(/_/g, ' ')}</p>
+            </div>
+          )}
           <button
             onClick={() => logout()}
             title="Logout"
-            className="rounded p-1 text-slate-600 hover:bg-slate-800 hover:text-slate-400 transition-colors"
+            className="rounded p-1 text-slate-400 hover:bg-slate-800 hover:text-slate-200 transition-colors"
           >
             <LogOut className="h-3.5 w-3.5" />
           </button>
@@ -138,3 +168,4 @@ export function Sidebar() {
     </aside>
   );
 }
+

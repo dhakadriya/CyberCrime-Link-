@@ -39,11 +39,13 @@ export function SecurityPage() {
 
   return (
     <div className="animate-fade-in">
-      <div className="page-header">
-        <h1 className="text-lg font-bold text-slate-100 flex items-center gap-2">
-          <ShieldAlert className="h-5 w-5 text-red-400" /> Security Dashboard
-        </h1>
-        <p className="text-xs text-slate-500 mt-0.5">Real-time security event monitoring</p>
+      <div className="page-header border-b border-slate-700 bg-slate-900 px-6 py-4 flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-100 flex items-center gap-2">
+            <ShieldAlert className="h-5 w-5 text-red-650" /> Security Dashboard
+          </h1>
+          <p className="text-xs text-slate-400 mt-1">Real-time security event monitoring</p>
+        </div>
       </div>
 
       <div className="page-content space-y-4">
@@ -53,18 +55,18 @@ export function SecurityPage() {
         {dashboard && (
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {[
-              { label: 'Total Events',         value: dashboard.total_events,              color: 'text-slate-200' },
-              { label: 'Critical',              value: dashboard.critical_events,           color: 'text-red-400' },
-              { label: 'High',                  value: dashboard.high_events,               color: 'text-orange-400' },
-              { label: 'Unresolved',            value: dashboard.unresolved_events,         color: 'text-amber-400' },
-              { label: 'Last 24h',              value: dashboard.events_last_24h,           color: 'text-blue-400' },
+              { label: 'Total Events',         value: dashboard.total_events,              color: 'text-slate-100' },
+              { label: 'Critical',              value: dashboard.critical_events,           color: 'text-red-750 font-bold' },
+              { label: 'High',                  value: dashboard.high_events,               color: 'text-orange-700 font-bold' },
+              { label: 'Unresolved',            value: dashboard.unresolved_events,         color: 'text-amber-700 font-bold' },
+              { label: 'Last 24h',              value: dashboard.events_last_24h,           color: 'text-indigo-650 font-bold' },
               { label: 'Failed Logins (7d)',    value: dashboard.failed_logins_7d,          color: 'text-slate-300' },
-              { label: 'Account Lockouts (7d)', value: dashboard.account_lockouts_7d,       color: 'text-orange-400' },
-              { label: 'Integrity Failures',   value: dashboard.evidence_integrity_failures, color: 'text-red-400' },
+              { label: 'Account Lockouts (7d)', value: dashboard.account_lockouts_7d,       color: 'text-orange-700' },
+              { label: 'Integrity Failures',   value: dashboard.evidence_integrity_failures, color: 'text-red-750 font-bold' },
             ].map(item => (
               <div key={item.label} className="card p-3">
                 <p className={`text-2xl font-bold ${item.color}`}>{String(item.value ?? 0)}</p>
-                <p className="text-xs text-slate-500 mt-0.5">{item.label}</p>
+                <p className="text-xs text-slate-400 mt-1 font-bold uppercase tracking-wider">{item.label}</p>
               </div>
             ))}
           </div>
@@ -72,19 +74,19 @@ export function SecurityPage() {
 
         {/* Recent critical */}
         {Array.isArray(dashboard?.recent_critical) && (dashboard.recent_critical as SecurityEvent[]).length > 0 && (
-          <div className="card p-5">
-            <h3 className="font-semibold text-slate-300 mb-3 flex items-center gap-2 text-sm">
-              <ShieldAlert className="h-4 w-4 text-red-400" /> Recent Critical / High Events
+          <div className="card p-5 border-[#FEE4E2] bg-[#FEE4E2]/15">
+            <h3 className="font-bold text-red-750 mb-3 flex items-center gap-2 text-sm uppercase tracking-wider">
+              <ShieldAlert className="h-4 w-4 text-red-650" /> Recent Critical / High Events
             </h3>
             <div className="space-y-2">
               {(dashboard.recent_critical as SecurityEvent[]).map(e => (
-                <div key={e.id} className="flex items-start gap-3 rounded-lg border border-red-800/30 bg-red-900/10 px-3 py-2">
+                <div key={e.id} className="flex items-start gap-3 rounded-lg border border-[#FEE4E2] bg-[#FEE4E2]/40 px-3 py-2">
                   <StatusBadge value={e.severity} type="severity" />
                   <div className="flex-1">
-                    <p className="text-xs font-semibold text-slate-300">{e.event_type}</p>
-                    <p className="text-xs text-slate-500">{e.description}</p>
+                    <p className="text-xs font-bold text-slate-100">{e.event_type}</p>
+                    <p className="text-xs text-slate-200 mt-0.5">{e.description}</p>
                   </div>
-                  <p className="text-xs text-slate-600 shrink-0 font-mono">{format(new Date(e.created_at), 'MM/dd HH:mm')}</p>
+                  <p className="text-xs text-slate-400 shrink-0 font-mono font-medium">{format(new Date(e.created_at), 'MM/dd HH:mm')}</p>
                 </div>
               ))}
             </div>
@@ -93,8 +95,8 @@ export function SecurityPage() {
 
         {/* Filter */}
         <div className="card p-4 flex items-center gap-3">
-          <Filter className="h-4 w-4 text-slate-600" />
-          <select className="input w-36 text-sm" value={severity}
+          <Filter className="h-4 w-4 text-slate-400" />
+          <select className="input w-36 h-[44px]" value={severity}
             onChange={e => { setSeverity(e.target.value); setPage(1) }}>
             <option value="">All Severity</option>
             <option value="LOW">LOW</option>
@@ -107,37 +109,37 @@ export function SecurityPage() {
         {loading ? <PageLoader /> : (
           <div className="card overflow-hidden">
             {(!data || data.items.length === 0) ? (
-              <p className="p-8 text-center text-slate-600">No security events found.</p>
+              <p className="p-8 text-center text-slate-400 font-bold">No security events found.</p>
             ) : (
               <>
                 <div className="overflow-x-auto">
                   <table className="w-full text-xs">
-                    <thead className="border-b border-slate-800 bg-slate-900/50">
+                    <thead className="table-header">
                       <tr>
                         {['Time', 'Event Type', 'Severity', 'User', 'IP', 'Description', 'Status'].map(h => (
-                          <th key={h} className="px-4 py-3 text-left font-medium text-slate-500">{h}</th>
+                          <th key={h} className="px-4 py-3 text-left font-bold text-slate-300 text-xs uppercase tracking-wider">{h}</th>
                         ))}
                       </tr>
                     </thead>
-                    <tbody>
+                    <tbody className="divide-y divide-[#EAECF0]">
                       {data.items.map(e => (
-                        <tr key={e.id} className="border-b border-slate-800/50 hover:bg-slate-800/30 transition-colors">
-                          <td className="px-4 py-2.5 text-slate-500 whitespace-nowrap font-mono">
+                        <tr key={e.id} className="table-row">
+                          <td className="table-cell text-slate-400 whitespace-nowrap font-mono">
                             {format(new Date(e.created_at), 'MM/dd HH:mm:ss')}
                           </td>
-                          <td className="px-4 py-2.5 font-mono font-medium text-slate-300">{e.event_type}</td>
-                          <td className="px-4 py-2.5"><StatusBadge value={e.severity} type="severity" /></td>
-                          <td className="px-4 py-2.5 text-slate-400">{e.username ?? '—'}</td>
-                          <td className="px-4 py-2.5 text-slate-600 font-mono">{e.ip_address ?? '—'}</td>
-                          <td className="px-4 py-2.5 text-slate-400 max-w-[200px] truncate">{e.description}</td>
-                          <td className="px-4 py-2.5">
+                          <td className="table-cell font-mono font-bold text-slate-100">{e.event_type}</td>
+                          <td className="table-cell"><StatusBadge value={e.severity} type="severity" /></td>
+                          <td className="table-cell text-slate-200 font-semibold">{e.username ?? '—'}</td>
+                          <td className="table-cell text-slate-400 font-mono font-medium">{e.ip_address ?? '—'}</td>
+                          <td className="table-cell text-slate-200 max-w-[200px] truncate">{e.description}</td>
+                          <td className="table-cell font-semibold">
                             {e.resolved ? (
-                              <span className="text-emerald-400 flex items-center gap-1">
-                                <ShieldCheck className="h-3 w-3" /> Resolved
+                              <span className="text-emerald-700 flex items-center gap-1">
+                                <ShieldCheck className="h-3.5 w-3.5" /> Resolved
                               </span>
                             ) : (
                               <button onClick={() => handleResolve(e.id)}
-                                className="text-xs text-indigo-400 hover:text-indigo-300 transition-colors">
+                                className="text-xs font-bold text-[#4338CA] hover:underline">
                                 Resolve
                               </button>
                             )}
@@ -147,7 +149,7 @@ export function SecurityPage() {
                     </tbody>
                   </table>
                 </div>
-                <div className="px-4">
+                <div className="px-4 py-2 border-t border-[#EAECF0]">
                   <Pagination page={data.page} pages={data.pages} total={data.total} size={data.size}
                     onChange={p => { setPage(p); load(p) }} />
                 </div>

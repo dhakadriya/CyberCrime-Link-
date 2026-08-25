@@ -32,39 +32,31 @@ export function LoginPage() {
 
   return (
     <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4 relative overflow-hidden">
-      {/* Background grid */}
-      <div className="absolute inset-0 opacity-[0.03]"
-        style={{ backgroundImage: 'linear-gradient(#6366f1 1px, transparent 1px), linear-gradient(90deg, #6366f1 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
-      {/* Radial glow */}
-      <div className="absolute inset-0 bg-radial-gradient" style={{
-        background: 'radial-gradient(ellipse at 50% 40%, rgba(99,102,241,0.08) 0%, transparent 70%)'
-      }} />
-
       <div className="w-full max-w-md relative z-10">
         {/* Logo */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center h-16 w-16 rounded-2xl bg-indigo-600 shadow-2xl shadow-indigo-900/50 mb-4 border border-indigo-500/30">
+          <div className="inline-flex items-center justify-center h-16 w-16 rounded-2xl bg-indigo-600 mb-4 border border-indigo-500/30">
             <Shield className="h-8 w-8 text-white" />
           </div>
-          <h1 className="text-3xl font-bold text-white tracking-tight">CrimeLink</h1>
-          <p className="text-slate-500 mt-1 text-sm flex items-center justify-center gap-1.5">
-            <Network className="h-3.5 w-3.5" />
-            AI-Powered Criminal Network Intelligence
+          <h1 className="text-3xl font-bold text-slate-100 tracking-tight">CrimeLink</h1>
+          <p className="text-slate-300 mt-2 text-sm flex items-center justify-center gap-1.5 font-semibold">
+            <Network className="h-3.5 w-3.5 text-indigo-600" />
+            Criminal Network Intelligence Platform
           </p>
         </div>
 
         {/* Demo notice */}
-        <div className="mb-5 rounded-lg border border-amber-700/30 bg-amber-900/10 px-4 py-3 text-center">
-          <p className="text-xs font-semibold text-amber-400">⚠ DEMO ENVIRONMENT — SYNTHETIC DATA ONLY</p>
-          <p className="text-xs text-amber-600/70 mt-0.5">No real investigation data is present</p>
+        <div className="mb-5 rounded-lg border border-[#FCD34D] bg-[#FEF3C7] px-4 py-3 text-center">
+          <p className="text-xs font-bold text-[#92400E]">⚠ DEMO ENVIRONMENT — SYNTHETIC DATA ONLY</p>
+          <p className="text-xs text-[#B45309] mt-0.5 font-medium">No real investigation data is present</p>
         </div>
 
         {/* Form card */}
-        <div className="rounded-2xl border border-slate-800 bg-slate-900/80 backdrop-blur-sm p-8 shadow-2xl">
-          <h2 className="text-base font-semibold text-slate-200 mb-6">Sign in to your account</h2>
+        <div className="rounded-2xl border border-slate-700 bg-slate-900 p-8 shadow-md">
+          <h2 className="text-sm font-bold text-slate-150 mb-6 uppercase tracking-wider">Sign in to your account</h2>
 
           {error && (
-            <div className="mb-4 rounded-lg border border-red-800/50 bg-red-900/20 px-4 py-3 text-sm text-red-300">
+            <div className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 font-medium">
               {error}
             </div>
           )}
@@ -73,7 +65,7 @@ export function LoginPage() {
             <div>
               <label className="label">Username</label>
               <div className="relative">
-                <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
+                <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
                 <input
                   type="text"
                   className="input pl-9"
@@ -90,7 +82,7 @@ export function LoginPage() {
             <div>
               <label className="label">Password</label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
                 <input
                   type={showPassword ? 'text' : 'password'}
                   className="input pl-9 pr-10"
@@ -103,7 +95,7 @@ export function LoginPage() {
                 />
                 <button
                   type="button"
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition-colors"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-450 hover:text-slate-100 transition-colors"
                   onClick={() => setShowPassword(v => !v)}
                 >
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -111,7 +103,7 @@ export function LoginPage() {
               </div>
             </div>
 
-            <button type="submit" className="btn-primary w-full mt-2 py-2.5" disabled={loading}>
+            <button type="submit" className="btn-primary w-full mt-2 h-[44px]" disabled={loading}>
               {loading ? (
                 <span className="flex items-center gap-2">
                   <span className="h-4 w-4 rounded-full border-2 border-white/20 border-t-white animate-spin" />
@@ -122,9 +114,9 @@ export function LoginPage() {
           </form>
 
           {/* Demo credentials hint */}
-          <div className="mt-6 rounded-lg bg-slate-800/50 border border-slate-700/50 p-4">
-            <p className="text-xs font-medium text-slate-500 mb-2">Demo accounts (use SEED_DEFAULT_PASSWORD):</p>
-            <div className="space-y-1 text-xs font-mono">
+          <div className="mt-6 rounded-lg bg-[#F8FAFC] border border-[#CBD5E1] p-4">
+            <p className="text-xs font-bold text-slate-300 mb-2">Demo accounts (use SEED_DEFAULT_PASSWORD):</p>
+            <div className="space-y-1.5 text-xs font-mono">
               {[
                 { user: 'superadmin', role: 'SUPER_ADMIN' },
                 { user: 'supervisor', role: 'CASE_SUPERVISOR' },
@@ -136,11 +128,11 @@ export function LoginPage() {
                   <button
                     type="button"
                     onClick={() => setUsername(user)}
-                    className="text-indigo-400 hover:text-indigo-300 transition-colors"
+                    className="text-indigo-650 hover:text-indigo-800 transition-colors font-bold"
                   >
                     {user}
                   </button>
-                  <span className="text-slate-600">{role}</span>
+                  <span className="text-slate-300 font-semibold">{role}</span>
                 </div>
               ))}
             </div>

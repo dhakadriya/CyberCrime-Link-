@@ -55,4 +55,12 @@ export const personsApi = {
     const response = await apiClient.put<Person>(`/persons/${id}`, data);
     return response.data;
   },
+
+  merge: async (sourceId: string, targetId: string): Promise<{ message: string }> => {
+    const response = await apiClient.post<{ message: string }>('/persons/merge', {
+      source_person_id: sourceId,
+      target_person_id: targetId,
+    });
+    return response.data;
+  },
 };

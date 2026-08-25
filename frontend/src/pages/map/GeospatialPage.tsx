@@ -6,6 +6,7 @@ import { PageLoader } from '../../components/shared/LoadingSpinner'
 import { ErrorAlert } from '../../components/shared/ErrorAlert'
 import { StatusBadge } from '../../components/shared/StatusBadge'
 import { getErrorMessage } from '../../api/client'
+import { useTheme } from '../../context/ThemeContext'
 import type { Case } from '../../types'
 
 interface GeoFeature {
@@ -26,7 +27,7 @@ interface GeoData {
 }
 
 // Lightweight SVG map renderer (no external map lib needed)
-function SimpleMapView({ features, filter }: { features: GeoFeature[]; filter: string }) {
+function SimpleMapView({ features, filter, theme }: { features: GeoFeature[]; filter: string; theme: string }) {
   const [hoveredId, setHoveredId] = useState<string | null>(null)
   const [selected, setSelected] = useState<GeoFeature | null>(null)
 
@@ -60,13 +61,17 @@ function SimpleMapView({ features, filter }: { features: GeoFeature[]; filter: s
       <svg
         viewBox="0 0 100 100"
         className="w-full h-full"
-        style={{ background: 'radial-gradient(ellipse at center, #0d1b2a 0%, #050d15 100%)' }}
+        style={{
+          background: theme === 'dark'
+            ? 'radial-gradient(ellipse at center, #0d1b2a 0%, #050d15 100%)'
+            : 'radial-gradient(ellipse at center, #f8fafc 0%, #e2e8f0 100%)'
+        }}
       >
         {/* Grid lines */}
         {[20, 40, 60, 80].map(v => (
-          <g key={v} opacity="0.06">
-            <line x1={v} y1="0" x2={v} y2="100" stroke="#64748b" strokeWidth="0.2" />
-            <line x1="0" y1={v} x2="100" y2={v} stroke="#64748b" strokeWidth="0.2" />
+          <g key={v} opacity={theme === 'dark' ? "0.06" : "0.2"}>
+            <line x1={v} y1="0" x2={v} y2="100" stroke={theme === 'dark' ? "#64748b" : "#94a3b8"} strokeWidth="0.2" />
+            <line x1="0" y1={v} x2="100" y2={v} stroke={theme === 'dark' ? "#64748b" : "#94a3b8"} strokeWidth="0.2" />
           </g>
         ))}
 
@@ -79,7 +84,7 @@ function SimpleMapView({ features, filter }: { features: GeoFeature[]; filter: s
               y1={toY(f.geometry.coordinates[1])}
               x2={toX(next.geometry.coordinates[0])}
               y2={toY(next.geometry.coordinates[1])}
-              stroke="#334155" strokeWidth="0.3" strokeDasharray="1,1" opacity="0.5"
+              stroke={theme === 'dark' ? "#334155" : "#cbd5e1"} strokeWidth="0.3" strokeDasharray="1,1" opacity="0.5"
             />
           )
         })}
@@ -105,13 +110,13 @@ function SimpleMapView({ features, filter }: { features: GeoFeature[]; filter: s
               )}
               <circle cx={cx} cy={cy} r={r}
                 fill={feature.properties.marker_color}
-                stroke="#0f172a" strokeWidth="0.5"
+                stroke={theme === 'dark' ? "#0f172a" : "#ffffff"} strokeWidth="0.5"
                 opacity="0.9"
               />
               {/* Label */}
               {(isHovered || isSelected) && (
                 <text x={cx + r + 1} y={cy + 0.8} fontSize="2.5"
-                  fill="#e2e8f0" fontWeight="600"
+                  fill={theme === 'dark' ? "#e2e8f0" : "#172033"} fontWeight="600"
                   style={{ pointerEvents: 'none' }}>
                   {feature.properties.name}
                 </text>
@@ -126,9 +131,9 @@ function SimpleMapView({ features, filter }: { features: GeoFeature[]; filter: s
         <div className="absolute top-3 right-3 w-56 card p-4 bg-slate-900/95 backdrop-blur-sm border-slate-700 shadow-xl">
           <div className="flex items-start justify-between mb-2">
             <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded border ${
-              selected.properties.feature_type === 'CASE' ? 'bg-indigo-900/40 text-indigo-300 border-indigo-700/30'
-              : selected.properties.feature_type === 'PERSON' ? 'bg-blue-900/40 text-blue-300 border-blue-700/30'
-              : 'bg-emerald-900/40 text-emerald-300 border-emerald-700/30'
+              selected.properties.feature_type === 'CASE' ? 'bg-indigo-100 text-indigo-800 border-indigo-300 dark:bg-indigo-900/40 dark:text-indigo-300 dark:border-indigo-700/30'
+              : selected.properties.feature_type === 'PERSON' ? 'bg-blue-100 text-blue-800 border-blue-300 dark:bg-blue-900/40 dark:text-blue-300 dark:border-blue-700/30'
+              : 'bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-emerald-900/40 dark:text-emerald-300 dark:border-emerald-700/30'
             }`}>
               {selected.properties.feature_type}
             </span>
@@ -169,6 +174,7 @@ function SimpleMapView({ features, filter }: { features: GeoFeature[]; filter: s
 }
 
 export function GeospatialPage() {
+  const { theme } = useTheme()
   const [cases, setCases] = useState<Case[]>([])
   const [selectedCase, setSelectedCase] = useState('')
   const [geoData, setGeoData] = useState<GeoData | null>(null)
@@ -258,7 +264,7 @@ export function GeospatialPage() {
             <PageLoader />
           </div>
         ) : (
-          <SimpleMapView features={features} filter={featureFilter} />
+          <SimpleMapView features={features} filter={featureFilter} theme={theme} />
         )}
       </div>
 

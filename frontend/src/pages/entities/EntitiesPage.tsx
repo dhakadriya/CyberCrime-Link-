@@ -20,10 +20,10 @@ const ENTITY_ICONS: Record<string, React.ReactNode> = {
 }
 
 const ENTITY_COLORS: Record<string, string> = {
-  PERSON:   'bg-indigo-900/30 text-indigo-400 border-indigo-700/30',
-  LOCATION: 'bg-emerald-900/30 text-emerald-400 border-emerald-700/30',
-  VEHICLE:  'bg-orange-900/30 text-orange-400 border-orange-700/30',
-}
+  PERSON:   'bg-indigo-100 text-indigo-800 border-indigo-300 dark:bg-indigo-900/30 dark:text-indigo-400 dark:border-indigo-700/30',
+  LOCATION: 'bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-emerald-900/30 dark:text-emerald-400 dark:border-emerald-700/30',
+  VEHICLE:  'bg-orange-100 text-orange-800 border-orange-300 dark:bg-orange-900/30 dark:text-orange-400 dark:border-orange-700/30',
+};
 
 export function EntitiesPage() {
   const [entities, setEntities] = useState<Entity[]>([])

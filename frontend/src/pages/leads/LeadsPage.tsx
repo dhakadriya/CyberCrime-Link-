@@ -59,7 +59,7 @@ function LeadCard({ lead, onUpdate }: { lead: Lead; onUpdate: () => void }) {
               <StatusBadge value={lead.severity} type="severity" />
               <StatusBadge value={lead.status} />
               {lead.auto_generated && (
-                <span className="text-[10px] px-1.5 py-0.5 rounded bg-violet-900/30 text-violet-400 border border-violet-700/30">
+                <span className="text-[10px] px-1.5 py-0.5 rounded bg-violet-100 text-violet-800 border border-violet-200 dark:bg-violet-900/30 dark:text-violet-400 dark:border-violet-700/30">
                   Auto-detected
                 </span>
               )}
@@ -108,9 +108,9 @@ function LeadCard({ lead, onUpdate }: { lead: Lead; onUpdate: () => void }) {
 
       {/* Notes */}
       {lead.notes && !showNotes && (
-        <div className="rounded-lg bg-blue-900/10 border border-blue-800/20 p-3">
-          <p className="text-xs text-slate-500 mb-1">Notes:</p>
-          <p className="text-xs text-slate-400">{lead.notes}</p>
+        <div className="rounded-lg bg-blue-50 border border-blue-200 dark:bg-blue-900/10 dark:border-blue-800/20 p-3">
+          <p className="text-xs text-blue-800 dark:text-slate-500 mb-1 font-semibold">Notes:</p>
+          <p className="text-xs text-blue-900 dark:text-slate-400">{lead.notes}</p>
         </div>
       )}
 
@@ -249,9 +249,9 @@ export function LeadsPage() {
       </div>
 
       <div className="page-content space-y-5">
-        <div className="rounded-lg border border-amber-800/30 bg-amber-900/10 px-4 py-3">
-          <p className="text-xs font-semibold text-amber-400">⚠ INVESTIGATIVE AIDS — NOT DETERMINATIONS OF GUILT</p>
-          <p className="text-xs text-amber-500/70 mt-0.5">
+        <div className="rounded-lg border border-amber-200 bg-amber-50 dark:border-amber-800/30 dark:bg-amber-900/10 px-4 py-3">
+          <p className="text-xs font-semibold text-amber-800 dark:text-amber-400">⚠ INVESTIGATIVE AIDS — NOT DETERMINATIONS OF GUILT</p>
+          <p className="text-xs text-amber-700 dark:text-amber-500/70 mt-0.5">
             Every lead must be reviewed by an authorized investigator. Algorithmic signals require human
             corroboration and verification before any investigative action.
           </p>
